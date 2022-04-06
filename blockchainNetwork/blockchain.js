@@ -1,9 +1,11 @@
 const sha256 = require('sha256')
-
+const currentNodeUrl = process.argv[3]
 function BlockChain(){
     this.chain = [];
     this.pendingTransaction = [];
-    this.createNewBlock('100',0,0)
+    this.createNewBlock('100',0,0);
+    this.currentNodeUrl = currentNodeUrl;
+    this.networkNodes = [];
 }
 //New block function
 BlockChain.prototype.createNewBlock = function(nonce, previousBlockHash, hash){
