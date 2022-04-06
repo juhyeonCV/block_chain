@@ -35,24 +35,24 @@ BlockChain.prototype.createNewTransaction = function(amount, sender,recipient){
     return this.getLastBlock()['index'] + 1
 }
 BlockChain.prototype.hashBlock = function (previousBlockHash, currentTransactions, nonce){
-    const dataAsString = previousBlockHash + nonce.toString() + JSON.stringify(currentTransactions)
+    const dataAsString = previousBlockHash + (nonce+'').toString() + JSON.stringify(currentTransactions)
     return sha256(dataAsString)
 }
 
 BlockChain.prototype.proofOfWork = function(previousBlockHash, cunrrentBlockData){
     this.difficulty = 3
-    this.nonce = 0
+    let nonce = 0
     const target = '0'.repeat(this.difficulty)
     while(true){
-        var currentHash  = this.hashBlock(previousBlockHash,cunrrentBlockData,this.nonce)
-        console.log(`nonce : ${this.nonce} | hash : ${currentHash}`)
+        var currentHash  = this.hashBlock(previousBlockHash,cunrrentBlockData,nonce)
+        //console.log(`nonce : ${nonce} | hash : ${currentHash}`)
         if (target == currentHash.substring(0,this.difficulty)){
-            return this.nonce}
+            return nonce}
         
         else{
-            this.nonce++
+            nonce++
         } 
     }
 }
-// console.log(sha256("abc123").substring(0,1))
+
 module.exports = BlockChain;

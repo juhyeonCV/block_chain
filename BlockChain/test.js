@@ -19,5 +19,8 @@ const currentTransactions = [
     { amount: 200, sender: 'kim1', recipient: 'lee2' },
     { amount: 300, sender: 'kim3', recipient: 'lee3' }
 ]
-
-console.log(bitcoin.proofOfWork(previousBlockHash,currentTransactions))
+let POWnonce = bitcoin.proofOfWork(previousBlockHash,currentTransactions)
+console.log(`nonce for newHas : ${POWnonce}`)
+console.log(bitcoin.hashBlock(previousBlockHash,currentTransactions))
+let newHashBlock = bitcoin.hashBlock(previousBlockHash,currentTransactions,POWnonce)
+console.log("HashBlock:",newHashBlock)
