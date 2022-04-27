@@ -19,8 +19,8 @@ router.get('/blockchain', (req,res)=>{
   res.send(bitcoin)
 })
 router.post('/transaction',(req,res)=>{
-  const blockIndex = bitcoin.createNewTransaction(req.body.amount,req.body.sender, req.body.recipient)
-  console.log(req.body.amount,req.body.sender, req.body.recipient)
+  const newTransaction = req.body.newTransaction
+  const blockIndex = bitcoin.addTransactionToPendingTransaction(newTransaction)
   res.json({note:`pendingTransaction${blockIndex}`})
 })
 
@@ -97,6 +97,26 @@ router.post('/register-nodes-bulk', function(req,res){
   })
   res.json({note: "All Node  registered successfully"})
 
+})
+router.post('/transaction/broadcast', function(req,res){
+  const newTransaction = bitcoin.createNewTransaction(req.body.amount,
+                                                      req.body.sender,
+                                                      req.body.recipient);
+  bitcoin.addTransactionToPendingTransaction(newTransaction)
+  const requestPromises = [];
+  bitcoin.networkNodes.forEach(networkNodeUrl =>{
+    const requestOptions = {
+      uri : networkNodeUrl +'/transaction',
+      method : 'POST',
+      body :{newTransaction:newTransaction},
+      json:true
+    }
+    requestPromises.push(rp(requestOptions))
+  })
+  Promise.all(requestPromises)
+  .then(data => {
+    res.json({note: "Transaction created and broadcast successfully"})
+  })
 })
 module.exports = router;
 
